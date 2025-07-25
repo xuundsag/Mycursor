@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Access Terminal</title>
+    <title>Anonymous.ai - Advanced AI Intelligence</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <!-- Loading Screen -->
@@ -12,7 +13,7 @@
         <div class="loading-content">
             <div class="loading-spinner"></div>
             <div class="loading-text">
-                <span class="loading-dots">Initializing system</span>
+                <span class="loading-dots">Initializing AI Neural Network</span>
             </div>
             <div class="loading-bar-container">
                 <div class="loading-bar"></div>
@@ -20,83 +21,137 @@
         </div>
     </div>
 
-    <!-- Main Hacking Interface -->
+    <!-- Main AI Interface -->
     <div id="main-interface" class="main-container hidden">
-        <div class="terminal-overlay">
-            <div class="terminal-header">
-                <div class="terminal-controls">
-                    <span class="dot red"></span>
-                    <span class="dot yellow"></span>
-                    <span class="dot green"></span>
+        <!-- Header -->
+        <header class="ai-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="brand-info">
+                        <h1>Anonymous.ai</h1>
+                        <span class="tagline">Advanced AI Intelligence</span>
+                    </div>
                 </div>
-                <div class="terminal-title">SECURE_TERMINAL_v2.1.3</div>
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>AI Active</span>
+                </div>
             </div>
-            
-            <div class="terminal-body">
-                <div class="terminal-content" id="terminal-content">
-                    <!-- Terminal text will be generated here -->
+        </header>
+
+        <!-- Chat Container -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="ai-info">
+                    <div class="ai-avatar">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="ai-details">
+                        <h3>Anonymous AI Assistant</h3>
+                        <span class="ai-status">Neural Network Active</span>
+                    </div>
                 </div>
-                <div class="cursor" id="cursor">█</div>
+                <div class="chat-controls">
+                    <button class="btn-icon" onclick="clearChat()" title="Clear Chat">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <button class="btn-icon" onclick="toggleSettings()" title="Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="message ai-message">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-text">
+                            Hello! I'm your Anonymous AI assistant. I'm powered by advanced neural networks and ready to help you with any questions or tasks. What would you like to know?
+                        </div>
+                        <div class="message-time">Just now</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="messageInput" 
+                        placeholder="Ask Anonymous AI anything..." 
+                        maxlength="500"
+                    >
+                    <button id="sendButton" class="send-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="input-footer">
+                    <span class="char-count">0/500</span>
+                    <span class="ai-note">Powered by Anonymous.ai Neural Network</span>
+                </div>
             </div>
         </div>
 
-        <!-- Side panels -->
-        <div class="side-panel left-panel">
-            <div class="panel-title">SYSTEM STATUS</div>
-            <div class="status-item">
-                <span class="status-label">CPU:</span>
-                <div class="progress-bar">
-                    <div class="progress-fill cpu-usage"></div>
+        <!-- Side Panel -->
+        <div class="side-panel">
+            <div class="panel-section">
+                <h4>AI Stats</h4>
+                <div class="stat-item">
+                    <span class="stat-label">Neural Load:</span>
+                    <div class="stat-bar">
+                        <div class="stat-fill" id="neuralLoad" style="width: 67%"></div>
+                    </div>
+                    <span class="stat-value">67%</span>
                 </div>
-                <span class="status-value" id="cpu-value">67%</span>
-            </div>
-            <div class="status-item">
-                <span class="status-label">RAM:</span>
-                <div class="progress-bar">
-                    <div class="progress-fill ram-usage"></div>
+                <div class="stat-item">
+                    <span class="stat-label">Processing:</span>
+                    <div class="stat-bar">
+                        <div class="stat-fill" id="processing" style="width: 42%"></div>
+                    </div>
+                    <span class="stat-value">42%</span>
                 </div>
-                <span class="status-value" id="ram-value">84%</span>
-            </div>
-            <div class="status-item">
-                <span class="status-label">NET:</span>
-                <div class="progress-bar">
-                    <div class="progress-fill net-usage"></div>
+                <div class="stat-item">
+                    <span class="stat-label">Memory:</span>
+                    <div class="stat-bar">
+                        <div class="stat-fill" id="memory" style="width: 84%"></div>
+                    </div>
+                    <span class="stat-value">84%</span>
                 </div>
-                <span class="status-value" id="net-value">42%</span>
             </div>
-            
-            <div class="network-map">
-                <div class="map-title">NETWORK NODES</div>
-                <div class="node-grid">
-                    <div class="node active" data-ip="192.168.1.1"></div>
-                    <div class="node scanning" data-ip="10.0.0.24"></div>
-                    <div class="node" data-ip="172.16.0.5"></div>
-                    <div class="node active" data-ip="8.8.8.8"></div>
-                    <div class="node" data-ip="127.0.0.1"></div>
-                    <div class="node scanning" data-ip="203.45.67.89"></div>
+
+            <div class="panel-section">
+                <h4>Quick Actions</h4>
+                <div class="quick-actions">
+                    <button class="action-btn" onclick="sendQuickMessage('Explain quantum computing')">
+                        <i class="fas fa-atom"></i>
+                        Quantum Computing
+                    </button>
+                    <button class="action-btn" onclick="sendQuickMessage('Help me code a function')">
+                        <i class="fas fa-code"></i>
+                        Code Assistant
+                    </button>
+                    <button class="action-btn" onclick="sendQuickMessage('Analyze this data')">
+                        <i class="fas fa-chart-line"></i>
+                        Data Analysis
+                    </button>
+                    <button class="action-btn" onclick="sendQuickMessage('Creative writing help')">
+                        <i class="fas fa-pen-fancy"></i>
+                        Creative Writing
+                    </button>
                 </div>
             </div>
         </div>
 
-        <div class="side-panel right-panel">
-            <div class="panel-title">ACTIVE PROCESSES</div>
-            <div class="process-list" id="process-list">
-                <!-- Processes will be generated here -->
-            </div>
-            
-            <div class="data-stream">
-                <div class="stream-title">DATA STREAM</div>
-                <div class="stream-content" id="stream-content">
-                    <!-- Data stream will be generated here -->
-                </div>
-            </div>
+        <!-- Background Effects -->
+        <div class="background-effects">
+            <div class="neural-network"></div>
+            <div class="floating-particles"></div>
         </div>
-
-        <!-- Matrix rain background -->
-        <canvas id="matrix-canvas" class="matrix-background"></canvas>
-        
-        <!-- Glitch overlay -->
-        <div class="glitch-overlay"></div>
     </div>
 
     <script src="script.js"></script>
