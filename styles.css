@@ -205,10 +205,11 @@ body {
 .chat-messages {
     flex: 1;
     padding: 1rem 2rem;
+    padding-bottom: 120px; /* Space for fixed input */
     overflow-y: auto;
     scroll-behavior: smooth;
     position: relative;
-    max-height: calc(100vh - 200px);
+    max-height: calc(100vh - 80px);
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE/Edge */
 }
@@ -292,8 +293,17 @@ body {
 
 /* Chat Input */
 .chat-input-container {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 800px;
     padding: 1rem 2rem 2rem;
+    background: linear-gradient(to top, var(--primary-bg) 0%, var(--primary-bg) 80%, transparent 100%);
     border-top: 1px solid var(--border-color);
+    z-index: 1000;
+    backdrop-filter: blur(10px);
 }
 
 .input-wrapper {
@@ -560,11 +570,15 @@ body {
     
     .chat-messages {
         padding: 1rem;
-        max-height: calc(100vh - 160px);
+        padding-bottom: 120px;
+        max-height: calc(100vh - 60px);
     }
     
     .chat-input-container {
         padding: 1rem;
+        max-width: 100%;
+        left: 0;
+        transform: none;
     }
     
     .message-content {
@@ -596,7 +610,8 @@ body {
     
     .chat-messages {
         padding: 0.75rem;
-        max-height: calc(100vh - 140px);
+        padding-bottom: 110px;
+        max-height: calc(100vh - 40px);
     }
     
     .chat-input-container {

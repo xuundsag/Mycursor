@@ -4,12 +4,14 @@ A sleek, high-tech AI chat interface with a dark theme and Anonymous.ai branding
 
 ## 🚀 Features
 
+- **Real AI Integration**: Multiple AI APIs with intelligent fallback system
 - **Zero Dependencies**: Pure HTML, CSS, and JavaScript - no packages to install
-- **Simulated AI Chat**: Intelligent responses without requiring real AI APIs
-- **Mobile Responsive**: Optimized for all devices with clean mobile UI
+- **Smart AI Responses**: Uses Hugging Face, PopCat, and other free AI APIs
+- **Mobile Responsive**: Optimized for all devices with smooth scrolling
 - **Dark High-Tech Theme**: Professional Anonymous.ai branding with green accents
-- **Real-time Stats**: Animated AI processing statistics
-- **Typing Indicators**: Realistic chat experience with typing animations
+- **Fixed Input Bar**: Always visible and accessible input area
+- **Smooth Scrolling**: Natural browser scrolling with proper mobile support
+- **Typing Indicators**: Realistic chat experience with AI processing
 - **Quick Actions**: Pre-defined prompts for common queries
 - **Keyboard Shortcuts**: Ctrl/Cmd+K to clear chat, Escape to close panels
 

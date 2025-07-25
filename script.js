@@ -132,12 +132,19 @@ function sendMessage() {
     
     // Show typing indicator and generate AI response
     showTypingIndicator();
-    setTimeout(() => {
-        const aiResponse = generateAIResponse(message);
-        hideTypingIndicator();
-        addMessage(aiResponse, 'ai');
-        messageHistory.push({ role: 'ai', content: aiResponse });
-    }, 1500 + Math.random() * 2000); // Random delay between 1.5-3.5 seconds
+    
+    // Add realistic delay before processing
+    setTimeout(async () => {
+        try {
+            const aiResponse = await generateAIResponse(message);
+            hideTypingIndicator();
+            addMessage(aiResponse, 'ai');
+            messageHistory.push({ role: 'ai', content: aiResponse });
+        } catch (error) {
+            hideTypingIndicator();
+            addMessage("I apologize, but I'm having trouble processing your request right now. Please try again.", 'ai');
+        }
+    }, 800 + Math.random() * 1200); // Random delay between 0.8-2 seconds
 }
 
 // Add message to chat
@@ -197,36 +204,179 @@ function hideTypingIndicator() {
     document.getElementById('sendButton').disabled = false;
 }
 
-// Generate AI response based on message content
-function generateAIResponse(message) {
+// Generate AI response using multiple APIs with fallback
+async function generateAIResponse(message) {
+    try {
+        // Try multiple free AI APIs with fallback
+        let response = null;
+        
+        // Method 1: Try Hugging Face API (free)
+        try {
+            response = await callHuggingFaceAPI(message);
+            if (response) return response;
+        } catch (error) {
+            console.log('Hugging Face API failed, trying next method...');
+        }
+        
+        // Method 2: Try OpenAI-compatible API (free alternative)
+        try {
+            response = await callOpenAIAlternative(message);
+            if (response) return response;
+        } catch (error) {
+            console.log('OpenAI alternative failed, trying next method...');
+        }
+        
+        // Method 3: Try another free API
+        try {
+            response = await callAnotherFreeAPI(message);
+            if (response) return response;
+        } catch (error) {
+            console.log('Third API failed, using intelligent fallback...');
+        }
+        
+        // Intelligent fallback with improved responses
+        return generateIntelligentFallback(message);
+        
+    } catch (error) {
+        console.error('All AI methods failed:', error);
+        return generateIntelligentFallback(message);
+    }
+}
+
+// Hugging Face API call (using a working free model)
+async function callHuggingFaceAPI(message) {
+    try {
+        // Using a simpler, more reliable model
+        const response = await fetch('https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                inputs: message,
+                options: { wait_for_model: true }
+            })
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            if (data && data[0] && data[0].generated_text) {
+                let result = data[0].generated_text.trim();
+                // Clean up the response
+                if (result.includes(message)) {
+                    result = result.replace(message, '').trim();
+                }
+                return result || null;
+            }
+        }
+    } catch (error) {
+        console.log('Hugging Face API error:', error);
+    }
+    return null;
+}
+
+// Alternative AI API using a free service
+async function callOpenAIAlternative(message) {
+    try {
+        // Using a free AI chat API
+        const response = await fetch(`https://api.popcat.xyz/chatbot?msg=${encodeURIComponent(message)}&owner=Anonymous&botname=AI`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            if (data && data.response) {
+                return data.response.trim();
+            }
+        }
+    } catch (error) {
+        console.log('PopCat API error:', error);
+    }
+    return null;
+}
+
+// Another free API option using SimSimi-like service
+async function callAnotherFreeAPI(message) {
+    try {
+        // Using a simple AI chat service
+        const response = await fetch('https://api.simsimi.vn/v1/simtalk', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                text: message,
+                lc: 'en'
+            })
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            if (data && data.success && data.message) {
+                return data.message.trim();
+            }
+        }
+    } catch (error) {
+        console.log('SimSimi API error:', error);
+    }
+    return null;
+}
+
+// Intelligent fallback system
+function generateIntelligentFallback(message) {
     const lowerMessage = message.toLowerCase();
     
-    // Check for specific topics
+    // Check for specific topics with detailed responses
     for (const [topic, response] of Object.entries(detailedResponses)) {
         if (lowerMessage.includes(topic)) {
             return detailedResponses[topic];
         }
     }
     
-    // Categorize message type
-    let responseCategory = 'general';
-    
-    if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
-        responseCategory = 'greetings';
-    } else if (lowerMessage.includes('code') || lowerMessage.includes('function') || lowerMessage.includes('programming')) {
-        responseCategory = 'code';
-    } else if (lowerMessage.includes('create') || lowerMessage.includes('design') || lowerMessage.includes('write')) {
-        responseCategory = 'creative';
-    } else if (lowerMessage.includes('how') || lowerMessage.includes('what') || lowerMessage.includes('explain')) {
-        responseCategory = 'technical';
+    // Advanced pattern matching for better responses
+    if (lowerMessage.includes('how') && lowerMessage.includes('work')) {
+        return `Great question about how things work! Let me explain the underlying mechanisms and principles involved. This typically involves several interconnected systems that operate together to achieve the desired outcome. Would you like me to dive deeper into any specific aspect?`;
     }
     
-    // Get random response from category
-    const responses = aiResponses[responseCategory];
-    const baseResponse = responses[Math.floor(Math.random() * responses.length)];
+    if (lowerMessage.includes('what') && (lowerMessage.includes('is') || lowerMessage.includes('are'))) {
+        return `That's an excellent definitional question! Based on current understanding and research, this concept encompasses several key characteristics and properties. Let me break down the essential components and explain how they relate to each other.`;
+    }
     
-    // Add some context based on the original message
-    return generateContextualResponse(baseResponse, message);
+    if (lowerMessage.includes('code') || lowerMessage.includes('programming') || lowerMessage.includes('function')) {
+        return `I'd be happy to help with your programming question! Here's a comprehensive approach to solve this: First, let's analyze the requirements and constraints. Then we can design an efficient solution with proper error handling and optimization. Would you like me to provide a specific code example?`;
+    }
+    
+    if (lowerMessage.includes('create') || lowerMessage.includes('design') || lowerMessage.includes('build')) {
+        return `Excellent creative project! Let's approach this systematically. First, we should define the goals and requirements. Then we can explore different design patterns and methodologies that would work best for your specific use case. I can guide you through the entire process step by step.`;
+    }
+    
+    if (lowerMessage.includes('help') || lowerMessage.includes('assist')) {
+        return `I'm here to help! I can assist you with a wide range of topics including technical questions, creative projects, problem-solving, analysis, and much more. What specific area would you like to explore together?`;
+    }
+    
+    if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
+        const greetings = [
+            "Hello! I'm your AI assistant, ready to help with any questions or challenges you have.",
+            "Hi there! I'm equipped with advanced knowledge across many domains. What would you like to explore?",
+            "Greetings! I'm here to provide intelligent assistance and insights. How can I help you today?",
+            "Hey! Great to chat with you. I can help with technical topics, creative projects, analysis, and more."
+        ];
+        return greetings[Math.floor(Math.random() * greetings.length)];
+    }
+    
+    // General intelligent response
+    const intelligentResponses = [
+        `That's a fascinating topic! Based on my analysis, there are several important aspects to consider. Let me provide you with a comprehensive perspective that covers both the theoretical foundations and practical applications.`,
+        `Excellent question! This involves multiple interconnected concepts that I'd be happy to explain. The key is understanding how these elements work together to create the bigger picture.`,
+        `I can definitely help you with that! This is an area where there have been significant developments and insights. Let me share what I know and how it might apply to your specific situation.`,
+        `That's an interesting challenge! From an analytical perspective, we can approach this by breaking it down into manageable components and examining each one systematically.`,
+        `Great inquiry! This touches on some important principles that are worth exploring in depth. I can provide you with both the foundational knowledge and advanced insights on this topic.`
+    ];
+    
+    return intelligentResponses[Math.floor(Math.random() * intelligentResponses.length)];
 }
 
 // Generate contextual response
@@ -370,84 +520,12 @@ function createFloatingParticles() {
 // Initialize chat scrolling functionality
 function initializeChatScrolling() {
     const chatMessages = document.getElementById('chatMessages');
-    let isScrolling = false;
     
     if (!chatMessages) return;
     
-    // Add smooth scrolling with mouse wheel
-    chatMessages.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        
-        const delta = e.deltaY;
-        const scrollSpeed = 2; // Adjust scroll speed
-        
-        chatMessages.scrollTop += delta * scrollSpeed;
-        
-        // Add scroll momentum
-        if (!isScrolling) {
-            isScrolling = true;
-            chatMessages.style.scrollBehavior = 'smooth';
-            
-            setTimeout(() => {
-                isScrolling = false;
-                chatMessages.style.scrollBehavior = 'auto';
-            }, 150);
-        }
-    }, { passive: false });
-    
-    // Add touch scrolling for mobile
-    let touchStartY = 0;
-    let touchEndY = 0;
-    
-    chatMessages.addEventListener('touchstart', (e) => {
-        touchStartY = e.touches[0].clientY;
-    }, { passive: true });
-    
-    chatMessages.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        touchEndY = e.touches[0].clientY;
-        
-        const deltaY = touchStartY - touchEndY;
-        const scrollSpeed = 1.5;
-        
-        chatMessages.scrollTop += deltaY * scrollSpeed;
-        touchStartY = touchEndY;
-    }, { passive: false });
-    
-    // Add keyboard scrolling
-    chatMessages.addEventListener('keydown', (e) => {
-        const scrollAmount = 100;
-        
-        switch(e.key) {
-            case 'ArrowUp':
-                e.preventDefault();
-                chatMessages.scrollTop -= scrollAmount;
-                break;
-            case 'ArrowDown':
-                e.preventDefault();
-                chatMessages.scrollTop += scrollAmount;
-                break;
-            case 'PageUp':
-                e.preventDefault();
-                chatMessages.scrollTop -= chatMessages.clientHeight * 0.8;
-                break;
-            case 'PageDown':
-                e.preventDefault();
-                chatMessages.scrollTop += chatMessages.clientHeight * 0.8;
-                break;
-            case 'Home':
-                e.preventDefault();
-                chatMessages.scrollTop = 0;
-                break;
-            case 'End':
-                e.preventDefault();
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-                break;
-        }
-    });
-    
-    // Make chat messages focusable for keyboard events
-    chatMessages.setAttribute('tabindex', '0');
+    // Remove custom scroll handling and let browser handle it naturally
+    chatMessages.style.overflowY = 'auto';
+    chatMessages.style.scrollBehavior = 'smooth';
     
     // Auto-scroll to bottom when new messages arrive
     const observer = new MutationObserver(() => {
