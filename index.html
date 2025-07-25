@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Access Terminal</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-container">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">
+                <span class="loading-dots">Initializing system</span>
+            </div>
+            <div class="loading-bar-container">
+                <div class="loading-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Hacking Interface -->
+    <div id="main-interface" class="main-container hidden">
+        <div class="terminal-overlay">
+            <div class="terminal-header">
+                <div class="terminal-controls">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                </div>
+                <div class="terminal-title">SECURE_TERMINAL_v2.1.3</div>
+            </div>
+            
+            <div class="terminal-body">
+                <div class="terminal-content" id="terminal-content">
+                    <!-- Terminal text will be generated here -->
+                </div>
+                <div class="cursor" id="cursor">█</div>
+            </div>
+        </div>
+
+        <!-- Side panels -->
+        <div class="side-panel left-panel">
+            <div class="panel-title">SYSTEM STATUS</div>
+            <div class="status-item">
+                <span class="status-label">CPU:</span>
+                <div class="progress-bar">
+                    <div class="progress-fill cpu-usage"></div>
+                </div>
+                <span class="status-value" id="cpu-value">67%</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">RAM:</span>
+                <div class="progress-bar">
+                    <div class="progress-fill ram-usage"></div>
+                </div>
+                <span class="status-value" id="ram-value">84%</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">NET:</span>
+                <div class="progress-bar">
+                    <div class="progress-fill net-usage"></div>
+                </div>
+                <span class="status-value" id="net-value">42%</span>
+            </div>
+            
+            <div class="network-map">
+                <div class="map-title">NETWORK NODES</div>
+                <div class="node-grid">
+                    <div class="node active" data-ip="192.168.1.1"></div>
+                    <div class="node scanning" data-ip="10.0.0.24"></div>
+                    <div class="node" data-ip="172.16.0.5"></div>
+                    <div class="node active" data-ip="8.8.8.8"></div>
+                    <div class="node" data-ip="127.0.0.1"></div>
+                    <div class="node scanning" data-ip="203.45.67.89"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="side-panel right-panel">
+            <div class="panel-title">ACTIVE PROCESSES</div>
+            <div class="process-list" id="process-list">
+                <!-- Processes will be generated here -->
+            </div>
+            
+            <div class="data-stream">
+                <div class="stream-title">DATA STREAM</div>
+                <div class="stream-content" id="stream-content">
+                    <!-- Data stream will be generated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Matrix rain background -->
+        <canvas id="matrix-canvas" class="matrix-background"></canvas>
+        
+        <!-- Glitch overlay -->
+        <div class="glitch-overlay"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
