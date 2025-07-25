@@ -109,6 +109,9 @@ function initializeChat() {
     
     // Initialize background effects
     initializeBackgroundEffects();
+    
+    // Initialize chat scrolling
+    initializeChatScrolling();
 }
 
 // Send message function
@@ -362,6 +365,103 @@ function createFloatingParticles() {
             }, 8000);
         }
     }, 2000);
+}
+
+// Initialize chat scrolling functionality
+function initializeChatScrolling() {
+    const chatMessages = document.getElementById('chatMessages');
+    let isScrolling = false;
+    
+    if (!chatMessages) return;
+    
+    // Add smooth scrolling with mouse wheel
+    chatMessages.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        
+        const delta = e.deltaY;
+        const scrollSpeed = 2; // Adjust scroll speed
+        
+        chatMessages.scrollTop += delta * scrollSpeed;
+        
+        // Add scroll momentum
+        if (!isScrolling) {
+            isScrolling = true;
+            chatMessages.style.scrollBehavior = 'smooth';
+            
+            setTimeout(() => {
+                isScrolling = false;
+                chatMessages.style.scrollBehavior = 'auto';
+            }, 150);
+        }
+    }, { passive: false });
+    
+    // Add touch scrolling for mobile
+    let touchStartY = 0;
+    let touchEndY = 0;
+    
+    chatMessages.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    
+    chatMessages.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        touchEndY = e.touches[0].clientY;
+        
+        const deltaY = touchStartY - touchEndY;
+        const scrollSpeed = 1.5;
+        
+        chatMessages.scrollTop += deltaY * scrollSpeed;
+        touchStartY = touchEndY;
+    }, { passive: false });
+    
+    // Add keyboard scrolling
+    chatMessages.addEventListener('keydown', (e) => {
+        const scrollAmount = 100;
+        
+        switch(e.key) {
+            case 'ArrowUp':
+                e.preventDefault();
+                chatMessages.scrollTop -= scrollAmount;
+                break;
+            case 'ArrowDown':
+                e.preventDefault();
+                chatMessages.scrollTop += scrollAmount;
+                break;
+            case 'PageUp':
+                e.preventDefault();
+                chatMessages.scrollTop -= chatMessages.clientHeight * 0.8;
+                break;
+            case 'PageDown':
+                e.preventDefault();
+                chatMessages.scrollTop += chatMessages.clientHeight * 0.8;
+                break;
+            case 'Home':
+                e.preventDefault();
+                chatMessages.scrollTop = 0;
+                break;
+            case 'End':
+                e.preventDefault();
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                break;
+        }
+    });
+    
+    // Make chat messages focusable for keyboard events
+    chatMessages.setAttribute('tabindex', '0');
+    
+    // Auto-scroll to bottom when new messages arrive
+    const observer = new MutationObserver(() => {
+        // Only auto-scroll if user is near the bottom
+        const isNearBottom = chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < 100;
+        
+        if (isNearBottom) {
+            setTimeout(() => {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 50);
+        }
+    });
+    
+    observer.observe(chatMessages, { childList: true, subtree: true });
 }
 
 // Handle mobile side panel
